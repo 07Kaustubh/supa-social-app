@@ -1,50 +1,102 @@
-# Welcome to your Expo app 👋
+# SupaSocial
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A social media mobile app built with Expo and Supabase.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **User authentication** with email/password via Supabase Auth
+- **Create posts** with a rich text editor (react-native-pell-rich-editor)
+- **Image and media attachments** from device camera or gallery (expo-image-picker)
+- **Social feed** with post cards showing author, content, and interactions
+- **Like and comment** on posts
+- **Real-time notifications** for social activity
+- **User profiles** with avatar upload
+- **Edit profile** to update name, bio, avatar, and more
+- **Welcome/onboarding flow** for new users
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Expo 52 (React Native 0.76) |
+| Routing | Expo Router 4 (file-based, typed routes) |
+| Backend | Supabase (Auth, Database, Storage) |
+| State | React Context (AuthContext) |
+| UI | React Native Elements (@rneui/themed), custom components |
+| Animations | React Native Reanimated 3 |
+| Media | expo-image-picker, expo-image, expo-av (video) |
+| Rich Text | react-native-pell-rich-editor + react-native-render-html |
+| Dates | moment.js |
+| Language | TypeScript (strict mode) |
+
+## Architecture
+
+SupaSocial uses Expo Router's file-based routing with typed routes. Navigation is auth-gated: unauthenticated users see the welcome, login, and signup screens, while authenticated users enter the `(main)` tab group with full access to the social feed and profile screens.
+
+Supabase handles three core concerns: authentication, Postgres database queries, and file storage for avatars and post images. The data access layer follows a service pattern, with separate service files for users, posts, notifications, and images. This keeps Supabase logic out of components and makes it straightforward to swap or extend.
+
+The app includes 11 reusable UI components (Avatar, Button, Input, PostCard, RichTextEditor, and others) that keep screens focused on layout and business logic. Global auth state lives in a React Context provider that wraps the entire app.
+
+## Getting Started
+
+**Prerequisites:** Node.js 18+, Expo CLI, and a Supabase project.
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/supa-social-app.git
+   cd supa-social-app
+   ```
+
+2. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Configure Supabase:
 
-   ```bash
-    npx expo start
+   Open `lib/supabase.js` and add your Supabase project URL and anon key:
+
+   ```js
+   const supabaseUrl = 'https://your-project.supabase.co'
+   const supabaseAnonKey = 'your-anon-key'
    ```
 
-In the output, you'll find options to open the app in a
+4. Start the dev server:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   npx expo start
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+5. Scan the QR code with Expo Go (iOS/Android) or run on an emulator.
 
-## Get a fresh project
+## Project Structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+supa-social-app/
+├── app/
+│   ├── _layout.jsx        # Root layout, auth redirect logic
+│   ├── index.jsx           # Loading screen
+│   ├── welcome.jsx         # Onboarding screen
+│   ├── login.jsx           # Login screen
+│   ├── signUp.jsx          # Signup screen
+│   └── (main)/             # Authenticated screens
+│       ├── home.jsx        # Social feed
+│       ├── newPost.jsx     # Create post
+│       ├── postDetails.jsx # Post with comments
+│       ├── profile.jsx     # User profile
+│       ├── editProfile.jsx # Edit profile
+│       └── notifications.jsx
+├── components/             # 11 reusable UI components
+├── contexts/               # Auth context provider
+├── services/               # Supabase data access layer
+├── lib/                    # Supabase client initialization
+├── helpers/                # Utility functions
+├── assets/                 # Icons and images
+└── patches/                # patch-package fixes
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## License
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+MIT
